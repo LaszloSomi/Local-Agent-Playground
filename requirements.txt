@@ -1,0 +1,19 @@
+# Web + agent
+fastapi>=0.115
+uvicorn[standard]>=0.30
+jinja2>=3.1
+itsdangerous>=2.2
+python-dotenv>=1.0
+httpx>=0.27
+msal>=1.34
+
+# LangGraph / LangChain (3rd-party agent framework)
+langgraph>=0.2
+langchain-core>=0.3
+langchain-ollama>=0.2
+langchain-openai>=0.2
+
+# Agent 365 observability (Microsoft OpenTelemetry distro, GA) + LangChain auto-instrumentation
+microsoft-opentelemetry[langchain]>=1.2
+# Local trace viewer (Jaeger) via OTLP/HTTP
+opentelemetry-exporter-otlp-proto-http>=1.36

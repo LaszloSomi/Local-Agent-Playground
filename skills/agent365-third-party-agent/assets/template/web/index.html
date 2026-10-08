@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{AGENT_NAME}}</title>
+<style>
+  :root { --bg:#0f172a; --panel:#111827; --muted:#94a3b8; --fg:#e5e7eb; --accent:#38bdf8; --user:#1e3a8a; --bot:#1f2937; --warn:#f59e0b; --err:#ef4444; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: "Segoe UI", system-ui, sans-serif; background:var(--bg); color:var(--fg); height:100vh; display:flex; flex-direction:column; }
+  header { padding:12px 20px; background:var(--panel); display:flex; align-items:center; gap:16px; border-bottom:1px solid #1f2937; }
+  header h1 { font-size:18px; margin:0; }
+  header .badge { font-size:12px; color:var(--muted); border:1px solid #334155; border-radius:999px; padding:2px 10px; }
+  header .spacer { flex:1; }
+  header a, header button { color:var(--accent); background:none; border:1px solid var(--accent); border-radius:6px; padding:6px 12px; cursor:pointer; text-decoration:none; font-size:14px; }
+  main { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:12px; }
+  .msg { max-width:720px; padding:10px 14px; border-radius:10px; line-height:1.45; white-space:pre-wrap; }
+  .user { align-self:flex-end; background:var(--user); }
+  .bot { align-self:flex-start; background:var(--bot); }
+  .meta { font-size:12px; color:var(--muted); margin-top:6px; }
+  .blocked { border:1px solid var(--err); }
+  .signin { margin:auto; text-align:center; color:var(--muted); }
+  .signin a { display:inline-block; margin-top:12px; color:#fff; background:#2563eb; padding:10px 18px; border-radius:8px; text-decoration:none; }
+  form { display:flex; gap:8px; padding:14px 20px; background:var(--panel); border-top:1px solid #1f2937; }
+  input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #334155; background:#0b1220; color:var(--fg); font-size:15px; }
+  form button { padding:10px 18px; border-radius:8px; border:none; background:#2563eb; color:#fff; font-size:15px; cursor:pointer; }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; padding:0 20px 10px; background:var(--panel); }
+  .chips button { font-size:13px; background:#0b1220; color:var(--fg); border:1px solid #334155; border-radius:999px; padding:4px 12px; cursor:pointer; }
+  .tabs { display:flex; gap:4px; padding:0 20px; background:var(--panel); border-bottom:1px solid #1f2937; }
+  .tabs button { background:none; border:none; border-bottom:3px solid transparent; color:var(--muted); padding:10px 14px; font-size:14px; cursor:pointer; }
+  .tabs button.active { color:var(--fg); border-bottom-color:var(--accent); }
+  .view { flex:1; display:flex; flex-direction:column; min-height:0; }
+  .hidden { display:none !important; }
+  #diag { flex:1; overflow-y:auto; padding:20px; }
+  #diag .bar { display:flex; align-items:center; gap:12px; margin-bottom:14px; color:var(--muted); font-size:13px; }
+  #diag .bar button { color:var(--accent); background:none; border:1px solid var(--accent); border-radius:6px; padding:6px 12px; cursor:pointer; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(520px,1fr)); gap:14px; }
+  .card { background:var(--panel); border:1px solid #1f2937; border-radius:10px; padding:14px 16px; }
+  .card.wide { grid-column:1/-1; }
+  .card h3 { margin:0 0 4px; font-size:15px; }
+  .card .sub { color:var(--muted); font-size:12px; margin-bottom:10px; }
+  .kv { display:grid; grid-template-columns:190px 1fr; gap:3px 12px; font-size:13px; }
+  .kv div:nth-child(odd) { color:var(--muted); }
+  .kv div { word-break:break-all; }
+  .pill { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px; border:1px solid; margin-right:4px; }
+  .ok { color:#22c55e; border-color:#22c55e; } .bad { color:var(--err); border-color:var(--err); }
+  .warn { color:var(--warn); border-color:var(--warn); } .off { color:var(--muted); border-color:#475569; }
+  table.t { width:100%; border-collapse:collapse; font-size:13px; }
+  table.t th { text-align:left; color:var(--muted); font-weight:600; border-bottom:1px solid #334155; padding:5px 6px; }
+  table.t td { border-bottom:1px solid #1f2937; padding:5px 6px; vertical-align:top; }
+  tr.na td { opacity:.5; }
+  details { margin-top:8px; font-size:12px; } summary { cursor:pointer; color:var(--accent); }
+  pre.json { background:#0b1220; border:1px solid #1f2937; border-radius:6px; padding:8px; overflow-x:auto; font-size:12px; max-height:360px; }
+  .tok { border-top:1px solid #1f2937; padding-top:10px; margin-top:10px; } .tok:first-of-type { border-top:none; margin-top:0; padding-top:0; }
+  .err { color:var(--err); font-size:13px; word-break:break-word; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🌦️ {{AGENT_NAME}}</h1>
+  <span class="badge" id="model">model: …</span>
+  <span class="badge" id="a365">Agent 365 export: …</span>
+  <span class="spacer"></span>
+  <span id="who" class="badge">not signed in</span>
+  <button id="reset" title="Start a new conversation">New chat</button>
+  <a id="authbtn" href="/login">Sign in</a>
+</header>
+<nav class="tabs">
+  <button id="tabChat" class="active">💬 Chat</button>
+  <button id="tabDiag">🩺 Diagnostics</button>
+</nav>
+<div id="chatView" class="view">
+<main id="log"></main>
+<div class="chips" id="chips">
+  <button>What's the weather in San Francisco?</button>
+  <button>Geocode 1 Microsoft Way, Redmond</button>
+  <button>What's the weather in Dallas, TX?</button>
+  <button>Give me the coordinates of Paris, France</button>
+</div>
+<form id="f">
+  <input id="q" autocomplete="off" placeholder="Ask about the weather or geocodes for a city…" />
+  <button type="submit">Send</button>
+</form>
+</div>
+<div id="diagView" class="view hidden">
+  <div id="diag">
+    <div class="bar"><button id="diagRefresh">↻ Refresh</button><span id="diagStatus">Open to load diagnostics.</span></div>
+    <div id="diagBody" class="grid"></div>
+  </div>
+</div>
+<script>
+const log = document.getElementById('log');
+let me = null;
+
+function add(cls, text, meta) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + cls;
+  d.textContent = text;
+  if (meta) { const m = document.createElement('div'); m.className = 'meta'; m.textContent = meta; d.appendChild(m); }
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+  return d;
+}
+
+async function init() {
+  me = await (await fetch('/api/me')).json();
+  if (me.agent) { document.title = me.agent; document.querySelector('h1').textContent = '🌦️ ' + me.agent; }
+  document.getElementById('model').textContent = 'model: ' + me.model;
+  document.getElementById('a365').textContent = 'Agent 365 export: ' + (me.a365Export ? 'ON' : 'off')
+    + ' · Purview: ' + (me.purview ? 'ON' : 'off');
+  const btn = document.getElementById('authbtn');
+  if (!me.authEnabled) { btn.style.display = 'none'; }
+  if (me.user) {
+    document.getElementById('who').textContent = '👤 ' + (me.user.name || me.user.upn);
+    btn.textContent = 'Sign out'; btn.href = '/logout';
+  } else if (me.authEnabled) {
+    log.innerHTML = '<div class="signin">Sign in with your work account to use the agent.<br/><a href="/login">Sign in with Microsoft</a></div>';
+  }
+}
+
+async function send(text) {
+  if (!text) return;
+  add('user', text);
+  const pending = add('bot', '…thinking');
+  try {
+    const r = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ message: text }) });
+    const j = await r.json();
+    if (!r.ok) {
+      if (j.error === 'session_expired') { pending.innerHTML = 'Your sign-in expired. <a href="/login">Sign in again</a>, then resend.'; pending.classList.add('blocked'); return; }
+      pending.textContent = 'Error: ' + (j.detail || j.error); pending.classList.add('blocked'); return;
+    }
+    pending.textContent = j.reply;
+    if (j.blocked) pending.classList.add('blocked');
+    const tools = (j.toolCalls || []).map(t => `${t.name}(${JSON.stringify(t.args)})`).join(', ');
+    const m = document.createElement('div'); m.className = 'meta';
+    m.textContent = (tools ? 'tools: ' + tools + ' · ' : '') + 'telemetry: ' + j.observability
+      + (j.purview && j.purview !== 'disabled' ? ' · purview: ' + j.purview : '');
+    pending.appendChild(m);
+  } catch (e) { pending.textContent = 'Error: ' + e; }
+}
+
+document.getElementById('f').addEventListener('submit', e => { e.preventDefault(); const q = document.getElementById('q'); send(q.value.trim()); q.value = ''; });
+document.querySelectorAll('#chips button').forEach(b => b.addEventListener('click', () => send(b.textContent)));
+document.getElementById('reset').addEventListener('click', async () => { await fetch('/api/reset', {method:'POST'}); log.innerHTML=''; });
+
+// ── Diagnostics tab ──────────────────────────────────────────────────────────
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = v => v === null || v === undefined || v === '' ? '—' : (typeof v === 'object' ? JSON.stringify(v) : v);
+const kv = o => '<div class="kv">' + Object.entries(o).map(([k, v]) => `<div>${esc(k)}</div><div>${esc(fmt(v))}</div>`).join('') + '</div>';
+const pill = (text, cls) => `<span class="pill ${cls}">${esc(text)}</span>`;
+const raw = (label, obj) => `<details><summary>${esc(label)}</summary><pre class="json">${esc(JSON.stringify(obj, null, 2))}</pre></details>`;
+const card = (title, sub, body, wide) => `<section class="card${wide ? ' wide' : ''}"><h3>${title}</h3>${sub ? `<div class="sub">${sub}</div>` : ''}${body}</section>`;
+const errOr = (x, f) => x && x._error ? `<div class="err">${esc(x._error)}</div>` : f(x);
+const stateCls = s => s === 'enabled' ? 'ok' : s === 'enabledForReportingButNotEnforced' ? 'warn' : 'off';
+const stateTxt = s => s === 'enabledForReportingButNotEnforced' ? 'report-only' : s;
+
+function tokenBlock(t) {
+  const cls = t.status === 'ok' ? 'ok' : t.status === 'error' ? 'bad' : 'off';
+  let h = `<div class="tok"><b>${esc(t.name)}</b> ${pill(t.status, cls)}<div class="sub">${esc(t.purpose)}</div>`;
+  if (t.error) h += `<div class="${t.status === 'error' ? 'err' : 'sub'}">${esc(t.error)}</div>`;
+  if (t.status === 'ok') {
+    h += kv({ 'expires': `${t.expiresAt} (${t.minutesLeft} min left)`, 'fingerprint': `${t.fingerprint} · ${t.length} chars`,
+              ...(t.scopeRequested ? { 'scope requested': t.scopeRequested } : {}), ...t.keyClaims });
+    h += raw('All claims (decoded, token not shown)', t.claims);
+  }
+  return h + '</div>';
+}
+
+function renderDiag(d) {
+  const c = d.config, dir = d.directory || {}, pv = d.purview;
+  const html = [];
+  html.push(card('🪪 Entra ID: signed-in user', 'From the ID token issued to the web client',
+    d.user ? kv({ name: d.user.name, upn: d.user.upn || d.user.preferred_username, 'object id': d.user.oid, tenant: d.user.tid })
+      + (d.user.idTokenClaims ? raw('ID token claims', d.user.idTokenClaims) : '<div class="sub">Sign out and in again to capture the ID token claims.</div>')
+      : `<div class="sub">${esc(d.note || 'Not signed in.')}</div>`));
+  html.push(card('🤖 Agent identity (Entra Agent ID)', dir.source ? esc(dir.source) : 'From .env / a365.generated.config.json',
+    kv({ 'agent name': c.agentName, 'agent identity (app) id': c.agentIdentityId, 'blueprint id': c.blueprintId,
+         'web client id': c.webClientId, 'tenant': c.tenantId, 'Agent 365 registration id': c.agentRegistrationId })
+    + (dir.agentIdentity ? errOr(dir.agentIdentity, a => kv({ 'display name': a.displayName, type: a['@odata.type'],
+         'account enabled': a.accountEnabled, created: a.createdDateTime, 'created by app': a.createdByAppId,
+         sponsors: Array.isArray(dir.sponsors) ? dir.sponsors.join('; ') : fmt(dir.sponsors), owners: (dir.owners || []).join('; ') || '—',
+         'custom security attributes': dir.customSecurityAttributes }) + raw('Agent identity (Graph)', a)) : '')
+    + (dir.blueprint ? errOr(dir.blueprint, b => raw('Blueprint (Graph)', b)) : '')));
+  html.push(card('🔑 Token chain', 'User → blueprint → agent identity (OBO). Only decoded claims are shown; raw tokens never leave the server.',
+    (d.tokens || []).map(tokenBlock).join('') || '<div class="sub">Sign in to see tokens.</div>', true));
+
+  if (dir.error || dir.enabled === false) {
+    html.push(card('🏛️ Directory & Conditional Access', '', `<div class="err">${esc(dir.error || dir.note)}</div>`, true));
+  } else if (dir.enabled) {
+    const inh = errOr(dir.inheritablePermissions, l => `<table class="t"><tr><th>Resource</th><th>Inheritable scopes</th></tr>${l.map(x =>
+      `<tr><td>${esc(x.resource)}</td><td>${esc(x.scopes)}</td></tr>`).join('')}</table>`);
+    const gr = errOr(dir.grants, l => `<table class="t"><tr><th>Resource</th><th>Delegated scopes</th><th>Consent</th><th>Held by</th></tr>${l.map(x =>
+      `<tr><td>${esc(x.resource)}</td><td>${esc(x.scope)}</td><td>${esc(x.consent)}</td><td>${esc(x.holder)}</td></tr>`).join('')}</table>`);
+    html.push(card('📜 Permissions', 'Blueprint inheritable permissions and delegated grants (the Purview SDK scopes are inherited from the blueprint)',
+      '<b>Inheritable (blueprint → agent identities)</b>' + inh + '<br/><b>Delegated grants</b>' + gr
+      + `<div class="sub">App role (application) assignments: ${esc((dir.appRoleAssignments || []).length || 'none')}</div>`));
+    html.push(card('🚦 Conditional Access policies', 'Static evaluation of each policy\'s assignments against this agent identity and the signed-in user. Device, location and risk conditions are evaluated by Entra at sign-in.',
+      errOr(dir.conditionalAccess, l => {
+        const n = l.filter(p => p.applies).length;
+        return `<div class="sub">${n} of ${l.length} policies target this agent or user.</div><table class="t"><tr><th>Policy</th><th>State</th><th>Applies to</th><th>Grant</th><th>Why / conditions</th></tr>`
+          + l.map(p => `<tr class="${p.applies ? '' : 'na'}"><td>${esc(p.name)}</td><td>${pill(stateTxt(p.state), stateCls(p.state))}</td>`
+            + `<td>${p.applies ? p.targets.map(t => pill(t, 'ok')).join('') : pill('not applicable', 'off')}</td><td>${esc(p.grant)}</td>`
+            + `<td>${esc([...p.reasons, ...p.conditions].join(' · ') || '—')}</td></tr>`).join('') + '</table>';
+      }), true));
+  }
+
+  if (pv) {
+    let body;
+    if (!pv.enabled) body = '<div class="sub">PURVIEW_ENABLED=false</div>';
+    else if (pv.error) body = `<div class="err">${esc(pv.error)}</div>`;
+    else body = kv({ 'application location': pv.applicationLocation, 'prompt (uploadText)': pv.modes.uploadText,
+                     'response (downloadText)': pv.modes.downloadText, 'fail closed': pv.failClosed })
+      + (pv.scopes.length ? `<table class="t"><tr><th>Activities</th><th>Execution mode</th><th>Locations</th><th>Policy actions</th></tr>${pv.scopes.map(s =>
+          `<tr><td>${esc(s.activities)}</td><td>${pill(s.executionMode, s.executionMode === 'evaluateInline' ? 'ok' : 'warn')}</td><td>${esc(s.locations.join(', '))}</td><td>${esc(s.policyActions.join(', ') || '—')}</td></tr>`).join('')}</table>`
+        : '<div class="sub">No Purview protection scope covers this user and agent: prompts are logged (metadata only), never blocked.</div>')
+      + raw('protectionScopes/compute response', pv.scopes.map(s => s.raw));
+    html.push(card('🛡️ Purview policies (Purview SDK)', 'protectionScopes/compute for this user + agent: the DLP / DSPM for AI policies applied to every prompt and response', body, true));
+  }
+  document.getElementById('diagBody').innerHTML = html.join('');
+}
+
+async function loadDiag() {
+  const st = document.getElementById('diagStatus');
+  st.textContent = 'Loading… (token exchanges and Graph reads can take a few seconds)';
+  try {
+    const r = await fetch('/api/diagnostics'); const j = await r.json();
+    if (!r.ok) {
+      st.innerHTML = j.error === 'not_signed_in' || j.error === 'session_expired' ? 'Sign in to view diagnostics. <a href="/login" style="color:var(--accent)">Sign in</a>' : 'Error: ' + esc(j.detail || j.error);
+      document.getElementById('diagBody').innerHTML = ''; return;
+    }
+    renderDiag(j); st.textContent = 'Generated ' + new Date(j.generatedAt).toLocaleString();
+  } catch (e) { st.textContent = 'Error: ' + e; }
+}
+
+function showTab(diag) {
+  document.getElementById('chatView').classList.toggle('hidden', diag);
+  document.getElementById('diagView').classList.toggle('hidden', !diag);
+  document.getElementById('tabChat').classList.toggle('active', !diag);
+  document.getElementById('tabDiag').classList.toggle('active', diag);
+  if (diag && !document.getElementById('diagBody').innerHTML) loadDiag();
+}
+document.getElementById('tabChat').addEventListener('click', () => showTab(false));
+document.getElementById('tabDiag').addEventListener('click', () => showTab(true));
+document.getElementById('diagRefresh').addEventListener('click', loadDiag);
+init();
+</script>
+</body>
+</html>

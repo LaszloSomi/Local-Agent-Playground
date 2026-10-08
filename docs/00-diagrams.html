@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agent 365 Third-Party Agent Demo – Diagrams</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #fdfcfa;
+  --cp-bg-elevated: #ffffff;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f8f8f8;
+  --cp-border: #e4e4e4;
+  --cp-border-strong: #8a8a8a;
+  --cp-text: #1f1f1f;
+  --cp-text-muted: #4a4a4a;
+  --cp-text-soft: #666666;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.07);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.10);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.90);
+  --cp-panel-strong: rgba(255, 255, 255, 0.97);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.10);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #55524f;
+  --cp-bg-elevated: #4a4846;
+  --cp-surface: #3d3c3b;
+  --cp-surface-soft: #454443;
+  --cp-border: #626160;
+  --cp-border-strong: #9a9a9a;
+  --cp-text: #f0f0f0;
+  --cp-text-muted: #cfcfcf;
+  --cp-text-soft: #c0c0c0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #7cc0ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+  --cp-overlay: rgba(61, 60, 59, 0.88);
+  --cp-panel: rgba(61, 60, 59, 0.80);
+  --cp-panel-strong: rgba(61, 60, 59, 0.97);
+  --cp-sheen: rgba(255, 255, 255, 0.05);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--cp-bg); color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 18px; line-height: 1.55;
+}
+code, pre { font-family: Consolas, "Courier New", Courier, monospace; }
+header {
+  position: sticky; top: 0; z-index: 10; background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border); padding: 12px 24px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+header h1 { font-size: 22px; margin: 0; font-weight: 600; }
+header h1 span { color: var(--cp-accent); }
+nav { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+nav a, .btn {
+  font-size: 15px; padding: 5px 12px; border-radius: 0.625rem; text-decoration: none;
+  color: var(--cp-text-muted); border: 1px solid var(--cp-border); background: var(--cp-surface);
+  cursor: pointer; font-family: inherit;
+}
+nav a:hover, .btn:hover { color: var(--cp-accent); border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+main { max-width: 1440px; margin: 0 auto; padding: 28px; }
+.intro { color: var(--cp-text-muted); margin: 0 0 28px; font-size: 19px; }
+section.card {
+  background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.10);
+  padding: 24px 28px; margin-bottom: 28px; scroll-margin-top: 80px;
+}
+.card h2 { margin: 0 0 6px; font-size: 28px; }
+.card .num { color: var(--cp-accent); margin-right: 10px; }
+.card .src { font-size: 15px; color: var(--cp-text-soft); margin-bottom: 14px; }
+.card .src a { color: var(--cp-link); }
+.card p { margin: 8px 0; color: var(--cp-text-muted); }
+.diagram {
+  background: var(--cp-bg-elevated); border: 1px solid var(--cp-border); border-radius: 0.625rem;
+  padding: 20px; overflow-x: auto; text-align: center; min-height: 80px;
+}
+.diagram svg { max-width: 100%; height: auto; }
+.talk {
+  margin-top: 14px; padding: 10px 14px; border-left: 4px solid var(--cp-accent);
+  background: var(--cp-accent-soft); border-radius: 0 0.625rem 0.625rem 0; font-size: 18px;
+}
+.talk b { color: var(--cp-accent); }
+.legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px; font-size: 16px; color: var(--cp-text-muted); }
+.legend span::before { content: ""; display: inline-block; width: 28px; height: 0; margin-right: 8px; vertical-align: middle; border-top: 4px solid; }
+.legend .pv::before { border-color: #0078d4; }
+.legend .ot::before { border-color: #8a8a8a; border-top-style: dashed; }
+.err { color: var(--cp-danger); font-size: 15px; }
+footer { text-align: center; color: var(--cp-text-soft); font-size: 15px; padding: 28px; }
+@media print {
+  header { position: static; }
+  nav, .btn { display: none; }
+  section.card { break-inside: avoid; box-shadow: none; }
+}
+.nb { width: 260px; height: 84px; display: flex; flex-direction: column; justify-content: center; align-items: center; white-space: normal; line-height: 1.25; }
+.comparison { text-align: left; }
+.comparison .scenario-label { color: var(--cp-accent); font-weight: 600; margin-bottom: 16px; font-size: 24px; }
+.comparison table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 24px; line-height: 1.35; }
+.comparison th, .comparison td { padding: 16px; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+.comparison th { background: var(--cp-surface); color: var(--cp-text); }
+.comparison th small { display: block; margin-top: 8px; font-size: 20px; color: var(--cp-text-muted); font-weight: 400; }
+.comparison th:first-child { width: 24%; }
+.comparison .outcome { color: var(--cp-accent); font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>Agent 365</span> · Third‑party agent registry demo — diagrams</h1>
+  <nav>
+    <a href="#d1">1 High‑level</a>
+    <a href="#d2">2 Solution</a>
+    <a href="#d3">3 Demo flow</a>
+    <a href="#d4">4 Setup</a>
+    <a href="#d5">5 Identities</a>
+    <a href="#d6">6 Sign‑in &amp; OBO</a>
+    <a href="#d7">7 Turn</a>
+    <a href="#d8">8 Telemetry</a>
+    <a href="#d9">9 DLP</a>
+    <a href="#d10">10 Cond. Access</a>
+    <a href="#d11">11 Three agents</a>
+    <button class="btn" onclick="toggleTheme()">◐ Theme</button>
+  </nav>
+</header>
+
+<main>
+<p class="intro">
+  All flowcharts from the <code>docs</code> folder in one place for presenting. Agent: <b>Laszlo-AgentRegistryDemo1</b>,
+  a Python/LangGraph agent on a local Ollama model, registered in Microsoft Entra Agent ID / Agent 365, instrumented with
+  the <b>Agent 365 Observability SDK</b> (OpenTelemetry) and the <b>Purview SDK</b> (Microsoft Graph Purview APIs).
+  Press <b>Ctrl+P</b> to save as a PDF handout. Add <code>?scoutTheme=light</code> or <code>?scoutTheme=dark</code> to force a theme.
+</p>
+
+<section class="card" id="d1">
+  <h2><span class="num">1</span>High‑level architecture: Agent 365 integration points</h2>
+  <div class="src">Source: <a href="../README.md">README.md</a>, <a href="02-register.md">02-register.md</a></div>
+<pre class="mermaid">
+flowchart LR
+  subgraph AG["Third-party agent (laptop / VM / any cloud)"]
+    direction TB
+    APP["&lt;div class='nb'&gt;Agent app<br/>LangGraph + Ollama&lt;/div&gt;"]
+    SDKE["&lt;div class='nb'&gt;1 · Entra integration<br/>A365 CLI setup + MSAL OBO&lt;/div&gt;"]
+    SDKO["&lt;div class='nb'&gt;2 · Agent 365<br/>Observability SDK&lt;/div&gt;"]
+    SDKP["&lt;div class='nb'&gt;3 · Purview SDK<br/>(Graph Purview APIs)&lt;/div&gt;"]
+    APP --- SDKE
+    APP --- SDKO
+    APP --- SDKP
+  end
+  subgraph M365["Microsoft Agent 365 control plane"]
+    direction TB
+    ID["&lt;div class='nb'&gt;① Identity<br/>Entra Agent ID<br/>blueprint → agent identity&lt;/div&gt;"]
+    REG["&lt;div class='nb'&gt;② Registry<br/>M365 admin center › Agents&lt;/div&gt;"]
+    OBS["&lt;div class='nb'&gt;③ Observability<br/>Agent 365 OTLP endpoint&lt;/div&gt;"]
+    DS["&lt;div class='nb'&gt;④ Data security<br/>Purview processContent&lt;/div&gt;"]
+  end
+  subgraph GOV["Security &amp; compliance consumers"]
+    direction TB
+    ENT["&lt;div class='nb'&gt;Entra<br/>sign-in logs · Conditional Access&lt;/div&gt;"]
+    DEF["&lt;div class='nb'&gt;Defender<br/>advanced hunting · AI agents&lt;/div&gt;"]
+    PV["&lt;div class='nb'&gt;Purview<br/>DLP · DSPM for AI · Audit&lt;/div&gt;"]
+    MAC["&lt;div class='nb'&gt;M365 admin center<br/>inventory · activity · block&lt;/div&gt;"]
+  end
+  SDKE -- "user sign-in + OBO tokens" --> ID
+  SDKE == "blueprint + agent registration" ==> REG
+  SDKO -. "OTel spans" .-> OBS
+  SDKP == "prompt + response text" ==> DS
+  DS == "allow / block verdict" ==> SDKP
+  ID --> ENT
+  REG --> MAC
+  OBS -.-> DEF
+  OBS -.-> MAC
+  OBS -.-> PV
+  DS ==> PV
+  classDef pv fill:#0078d42e,stroke:#0078d4,stroke-width:3px
+  classDef ot fill:#8a8a8a1f,stroke:#8a8a8a,stroke-width:2px,stroke-dasharray:6 4
+  class SDKP,DS,PV pv
+  class SDKO,OBS ot
+</pre>
+  <div class="legend"><span class="pv">Purview SDK: prompt/response text, policy verdicts</span><span class="ot">OpenTelemetry: activity telemetry, no policy enforcement</span></div>
+  <div class="talk"><b>Four integration points:</b> ① an <i>identity</i> in Entra, ② an entry in the <i>registry</i>,
+  ③ <i>telemetry</i> through the Observability SDK, and ④ <i>data security</i> through the Purview SDK. The agent keeps running where it is.
+  Only identity, telemetry and the Purview API calls go to Microsoft.
+  <br/><b>Build order (left column, top to bottom):</b> 1 Entra integration comes first (the A365 CLI creates the blueprint, agent identity and registry entry, and the app uses MSAL OBO at runtime), then 2 the Observability SDK, and 3 the Purview SDK last.</div>
+</section>
+
+<section class="card" id="d2">
+  <h2><span class="num">2</span>Solution architecture</h2>
+  <div class="src">Source: <a href="../README.md">README.md</a> · code: <code>agent/app.py</code>, <code>agent/guard.py</code>, <code>agent/purview.py</code>, <code>agent/telemetry.py</code></div>
+<pre class="mermaid">
+flowchart TB
+  U["👤 User browser"] -- "Entra sign-in (MSAL)" --> W["Web UI :8000<br/>FastAPI"]
+  W --> A["LangGraph agent<br/>Ollama qwen2.5:7b"]
+  A -- tools --> OM["Open-Meteo / OSM Nominatim<br/>weather + geocode"]
+  subgraph PVP["Purview SDK path: policy on prompt + response"]
+    direction TB
+    PS["Purview SDK<br/>guard.py · purview.py"]
+    PV["Microsoft Purview<br/>DLP · DSPM for AI<br/>Activity explorer"]
+    PS <== "Graph processContent (OBO)<br/>→ allow / block" ==> PV
+  end
+  subgraph OTP["OpenTelemetry path: telemetry only"]
+    direction TB
+    D{"Agent 365<br/>Observability SDK"}
+    J["Jaeger :16686<br/>(local)"]
+    A365["Agent 365<br/>Observability"]
+    DEF["Microsoft Defender"]
+    PVA["Purview Audit<br/>(activity)"]
+    MAC["M365 admin center"]
+    D -. OTLP .-> J
+    D -. "OBO token" .-> A365
+    A365 -.-> DEF
+    A365 -.-> PVA
+    A365 -.-> MAC
+  end
+  A == "prompt (uploadText)<br/>response (downloadText)" ==> PS
+  A -. "OTel spans<br/>invoke_agent · chat · execute_tool" .-> D
+  classDef pv fill:#0078d42e,stroke:#0078d4,stroke-width:3px
+  classDef ot fill:#8a8a8a1f,stroke:#8a8a8a,stroke-width:2px,stroke-dasharray:6 4
+  class PS,PV pv
+  class D,A365 ot
+</pre>
+  <div class="legend"><span class="pv">Purview SDK path: prompt and response go to Purview for policy</span><span class="ot">OpenTelemetry path: telemetry only</span></div>
+  <div class="talk"><b>Talk track:</b> the prompt and the response go from LangGraph to Purview <b>through the Purview SDK</b>
+  (<code>processContent</code>), before the LLM runs and before the answer is shown. That's where DLP decides allow or block.
+  OpenTelemetry carries <i>activity</i> telemetry to Defender, Purview Audit and the admin center, but it does <b>not</b>
+  evaluate or enforce prompt/response policies.</div>
+</section>
+
+<section class="card" id="d3">
+  <h2><span class="num">3</span>Demo storyline</h2>
+  <div class="src">Source: <a href="presenter-script.md">presenter-script.md</a> (≈35 min)</div>
+<pre class="mermaid">
+flowchart LR
+  P1["① The agent<br/>5 min<br/>local chat + Jaeger"] --> P2["② Identity &amp; registry<br/>10 min<br/>a365 setup all<br/>+ Configure-Entra"]
+  P2 --> P3["③ Users, OTel &amp;<br/>Purview SDK<br/>5 min<br/>sign in as Alice"]
+  P3 --> P4["④ Security &amp; compliance<br/>10 min<br/>Defender · Purview · MAC"]
+  P4 --> P5["⑤ Policy<br/>3 min<br/>DLP: SF ✅ Dallas ⛔<br/>CA (Phase 2)"]
+</pre>
+</section>
+
+<section class="card" id="d4">
+  <h2><span class="num">4</span>Setup &amp; registration steps</h2>
+  <div class="src">Source: <a href="01-run-agent.md">01-run-agent.md</a>, <a href="02-register.md">02-register.md</a>, <a href="05-phase2-dlp-ca.md">05-phase2-dlp-ca.md</a></div>
+<pre class="mermaid">
+flowchart LR
+  subgraph L["① Local (no tenant)"]
+    direction TB
+    S1["scripts\setup.ps1<br/>Python venv · Ollama · Jaeger · .env"] --> S2["scripts\run.ps1<br/>local test, AUTH_ENABLED=false"]
+  end
+  subgraph R["② Register (Global Admin)"]
+    direction TB
+    S3["az login --tenant …"] --> S4["a365 setup requirements"]
+    S4 --> S5["a365 setup all -n Laszlo-AgentRegistryDemo1<br/>--authmode obo"]
+    S5 --> CA{{"✅ Checkpoint A/B<br/>Entra Agent ID + MAC registry"}}
+  end
+  subgraph C["③ Wire up &amp; verify"]
+    direction TB
+    S7["scripts\Configure-Entra.ps1<br/>scope · web client · consent<br/>inheritable: Purview SDK + OtelWrite<br/>.env (PURVIEW_ENABLED)"] --> CC{{"✅ Checkpoint C<br/>App registrations + inherited scopes"}}
+    CC --> S8["run.ps1 → sign in as Alice → chat"]
+    S8 --> CD{{"✅ Checkpoint D/E<br/>Sign-in logs · purview: status"}}
+    CD --> S9["Defender · Purview · MAC<br/>(allow up to ~1 h)"]
+  end
+  subgraph P["④ Policy"]
+    direction TB
+    S10["SIT 'Demo - Restricted City'<br/>(Dallas)"] --> S11["scripts\New-PurviewDlpDemo.ps1<br/>DLP for the agent app"]
+  end
+  L --> R
+  R --> C
+  C --> P
+  classDef pv fill:#0078d42e,stroke:#0078d4,stroke-width:3px
+  class S7,S10,S11 pv
+</pre>
+</section>
+
+<section class="card" id="d5">
+  <h2><span class="num">5</span>Entra objects and permissions</h2>
+  <div class="src">Source: <a href="02-register.md">02-register.md</a></div>
+<pre class="mermaid">
+flowchart TB
+  subgraph Entra["Microsoft Entra ID"]
+    BP["Agent identity blueprint<br/>Laszlo-AgentRegistryDemo1 Blueprint<br/>exposes api://blueprint/access_agent_as_user"]
+    AI["Agent identity<br/>Laszlo-AgentRegistryDemo1 Identity<br/>= gen_ai.agent.id"]
+    WC["App registration<br/>Laszlo-AgentRegistryDemo1-WebClient<br/>(the browser UI)"]
+    BP -- "creates +<br/>inheritable permissions" --> AI
+    WC -- "delegated: access_agent_as_user" --> BP
+  end
+  AI == "inherited (OBO), Graph:<br/>ProtectionScopes.Compute.User<br/>Content.Process.User · ContentActivity.Write" ==> PUR["Purview SDK<br/>Graph dataSecurityAndGovernance"]
+  AI -. "inherited (OBO):<br/>Agent365.Observability.OtelWrite" .-> OBS["Agent 365 Observability API"]
+  REG[("Agent 365 registry<br/>M365 admin center › Agents")] -. lists .- BP
+  classDef pv fill:#0078d42e,stroke:#0078d4,stroke-width:3px
+  class PUR pv
+</pre>
+  <div class="talk"><b>Why three objects?</b> The blueprint is the template and credential holder, and it carries the
+  <b>inheritable permissions</b> (Purview SDK and Observability scopes) that every agent identity gets. The agent identity is the
+  runtime principal. Blueprints can't do interactive sign‑in, so a normal app registration signs the user in.</div>
+</section>
+
+<section class="card" id="d6">
+  <h2><span class="num">6</span>User sign‑in and on‑behalf‑of token chain</h2>
+  <div class="src">Source: <a href="02-register.md">02-register.md</a> · code: <code>agent/auth.py</code></div>
+<pre class="mermaid">
+%%{init: {"sequence": {"messageFontSize": 20, "actorFontSize": 20, "noteFontSize": 19}}}%%
+sequenceDiagram
+  autonumber
+  participant B as Browser (Alice)
+  participant W as Web UI (web client app)
+  participant E as Entra ID
+  participant P as Purview (Graph)
+  participant O as Agent 365 Observability
+  B->>E: sign in (PKCE)<br/>scope access_agent_as_user
+  E-->>W: user token Tc (aud = blueprint)
+  W->>E: blueprint secret + fmi_path
+  E-->>W: T1 (blueprint → agent identity)
+  W->>E: OBO (T1, Tc) → Graph Purview scopes
+  E-->>W: Graph token (agent identity + Alice)
+  W->>P: processContent (prompt, response)
+  P-->>W: allow / block
+  W->>E: OBO (T1, Tc) → OtelWrite
+  E-->>W: observability token
+  W->>O: POST …/otlp/agents/{agentId}/traces
+  O-->>W: 200 OK
+</pre>
+</section>
+
+<section class="card" id="d7">
+  <h2><span class="num">7</span>One chat turn: Purview SDK checks and the spans it produces</h2>
+  <div class="src">Source: <a href="01-run-agent.md">01-run-agent.md</a>, <a href="05-phase2-dlp-ca.md">05-phase2-dlp-ca.md</a> · code: <code>agent/app.py</code>, <code>agent/guard.py</code>, <code>agent/purview.py</code></div>
+<pre class="mermaid">
+%%{init: {"sequence": {"messageFontSize": 20, "actorFontSize": 20, "noteFontSize": 19}}}%%
+sequenceDiagram
+  participant U as User
+  participant App as app.py (LangGraph)
+  participant PV as Purview SDK
+  participant L as LLM (qwen2.5)
+  participant T as Tool (Open-Meteo)
+  U->>App: "Weather in San Francisco?"
+  rect rgba(177,31,75,0.08)
+  Note over App,T: invoke_agent (root OTel span)
+  App->>PV: prompt_guard<br/>processContent uploadText
+  PV-->>App: allowed (Dallas: blocked, stop)
+  App->>L: chat span
+  L-->>App: call get_weather
+  App->>T: execute_tool span
+  T-->>App: 63.7°F, overcast
+  App->>L: chat span
+  L-->>App: final answer
+  App->>PV: response_guard<br/>processContent downloadText
+  PV-->>App: allowed
+  end
+  App-->>U: answer + purview status
+</pre>
+  <div class="talk"><b>Two separate channels:</b> the Purview SDK calls carry the prompt and answer <i>text</i> and return a verdict.
+  The OTel spans (<code>invoke_agent</code>, <code>chat</code>, <code>execute_tool</code>) carry <code>gen_ai.agent.id</code>,
+  <code>gen_ai.conversation.id</code>, <code>microsoft.tenant.id</code>, <code>user.id / user.email</code> and <code>client.address</code>
+  for Defender, Purview Audit and the admin center.</div>
+</section>
+
+<section class="card" id="d8">
+  <h2><span class="num">8</span>Where the OpenTelemetry shows up</h2>
+  <div class="src">Source: <a href="03-observability.md">03-observability.md</a></div>
+<pre class="mermaid">
+flowchart LR
+  SP["Spans<br/>invoke_agent · chat · execute_tool"] --> J["Jaeger<br/>instant"]
+  SP --> EXP["A365 exporter<br/>(OBO token)"]
+  EXP --> CHK{"E7 / Agent 365 license<br/>assigned in tenant?"}
+  CHK -- no --> DROP["Dropped silently<br/>(HTTP 200)"]
+  CHK -- yes --> ROOT{"Root invoke_agent<br/>span?"}
+  ROOT -- no --> AH["Defender advanced hunting only<br/>CloudAppEvents"]
+  ROOT -- yes --> ALL["Defender advanced hunting + AI agent views<br/>Purview Audit (activity)<br/>M365 admin center › Agents<br/>(5 min – ~1 h)"]
+</pre>
+  <div class="talk"><b>Not on this path:</b> prompt/response policy evaluation. DLP verdicts and the prompt/response text in
+  Activity explorer come from the <b>Purview SDK</b> (<code>processContent</code>), slide 9.</div>
+</section>
+
+<section class="card" id="d9">
+  <h2><span class="num">9</span>DLP via the Purview SDK: San Francisco allowed, Dallas blocked</h2>
+  <div class="src">Source: <a href="05-phase2-dlp-ca.md">05-phase2-dlp-ca.md</a> · script: <code>scripts/New-PurviewDlpDemo.ps1</code></div>
+<pre class="mermaid">
+flowchart TB
+  Q["User prompt"] --> G["prompt_guard()<br/>agent/guard.py"]
+  G --> SC["protectionScopes/compute<br/>(cached per user, ETag)"]
+  SC --> PC["processContent<br/>uploadText · prompt text<br/>(agent identity, OBO)"]
+  PC --> POL{"Purview DLP policy<br/>location = agent app ID<br/>SIT: Restricted City = Dallas"}
+  POL -- "San Francisco: no match" --> OK["LLM + tools run"]
+  OK --> RG["response_guard()<br/>processContent downloadText"]
+  RG --> ANS["Answer shown"]
+  POL -- "Dallas: match → Block" --> BLK["Blocked by your<br/>organization's policy"]
+  BLK --> AUD["Purview Activity explorer<br/>DLP alert · Defender"]
+  classDef pv fill:#0078d42e,stroke:#0078d4,stroke-width:3px
+  class G,SC,PC,RG pv
+</pre>
+</section>
+
+<section class="card" id="d10">
+  <h2><span class="num">10</span>Phase 2 (planned): Conditional Access, Alice allowed, Bob blocked</h2>
+  <div class="src">Source: <a href="05-phase2-dlp-ca.md">05-phase2-dlp-ca.md</a></div>
+<pre class="mermaid">
+flowchart TB
+  S["Sign-in to WebClient / blueprint resource"] --> LOC{"From named location<br/>'Corp network'?"}
+  LOC -- yes --> ALLOW["✅ Allowed → agent runs"]
+  LOC -- no --> DEV{"Compliant / hybrid-joined<br/>device?"}
+  DEV -- "yes (Alice, Intune laptop)" --> ALLOW
+  DEV -- "no (Bob, unmanaged / off-network)" --> BLOCK["⛔ Blocked at sign-in<br/>AADSTS53000 / 53003"]
+  BLOCK --> LOG["Entra sign-in logs<br/>Conditional Access tab"]
+</pre>
+</section>
+<section class="card" id="d11">
+  <h2><span class="num">11</span>Three agents: local, observable, governed</h2>
+  <div class="src">Source: <a href="presenter-script.md">presenter-script.md</a> · intended comparison setup</div>
+  <div class="diagram comparison">
+    <div class="scenario-label">Intended demo setup · present left to right: Agent3 → Agent2 → Agent1</div>
+    <table aria-label="Three-agent demo comparison">
+      <thead><tr>
+        <th scope="col">Same agent logic</th>
+        <th scope="col">DemoAgent3<small>Local baseline<br/>localhost:8002 (proposed)</small></th>
+        <th scope="col">DemoAgent2<small>Observable<br/>localhost:8001</small></th>
+        <th scope="col">DemoAgent1<small>Governed<br/>localhost:8000</small></th>
+      </tr></thead>
+      <tbody>
+        <tr><th scope="row">Entra / registry</th><td>No integration</td><td>Registered</td><td>Registered</td></tr>
+        <tr><th scope="row">Observability</th><td>Local Jaeger only</td><td>Jaeger + Agent 365</td><td>Jaeger + Agent 365</td></tr>
+        <tr><th scope="row">Purview SDK</th><td>Disabled</td><td>Enabled</td><td>Enabled</td></tr>
+        <tr><th scope="row">Dallas-block policy</th><td>No Purview enforcement</td><td>Not targeted</td><td>Applied</td></tr>
+        <tr class="outcome"><th scope="row">Dallas prompt</th><td>Answer returned*</td><td>Answer returned*</td><td>Blocked before LLM</td></tr>
+        <tr><th scope="row">San Francisco</th><td>Answer returned*</td><td>Answer returned*</td><td>Answer returned*</td></tr>
+      </tbody>
+    </table>
+    <p>* Expected with healthy model/tools and no other blocking policy. Agent1 and Agent2 share a blueprint, not necessarily DLP policy scope.</p>
+  </div>
+  <div class="talk"><b>Talk track:</b> start with Agent3: a working local agent without Agent 365 integration.
+  Move to Agent2: registered and observable, with the Purview SDK still enabled but outside the Dallas-block policy.
+  Finish with Agent1: the same Dallas prompt is blocked by Purview before the model runs. San Francisco works in all three.
+  Permissions enable the integration; policy targeting determines enforcement.</div>
+  <p class="prep"><b>Preparation required:</b> Agent3 has not been created. The current DLP setup script targets both registered instances.
+  Scope the Dallas-block policy to Agent1 only and verify Agent2 is not blocked before presenting this comparison.
+  A separate collection policy can capture Agent2 prompt/response content without applying the Dallas-block rule.</p>
+</section>
+</main>
+
+<footer>Laszlo-AgentRegistryDemo1 · Local Agent Playground · diagrams generated from the Markdown docs</footer>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  const decode = (html) => {
+    const t = document.createElement("textarea");
+    t.innerHTML = html.replace(/<br\s*\/?>/gi, "@@BR@@");
+    return t.value.replace(/@@BR@@/g, "<br/>");
+  };
+  const sources = [...document.querySelectorAll("pre.mermaid")].map(el => decode(el.innerHTML));
+
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  async function render() {
+    const dark = document.documentElement.getAttribute("data-theme") === "dark";
+    const font = '"Segoe UI", Aptos, Calibri, sans-serif';
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "loose",
+      theme: "base",
+      fontFamily: font,
+      fontSize: 20,
+      flowchart: { htmlLabels: true, curve: "basis", nodeSpacing: 45, rankSpacing: 60, padding: 14 },
+      sequence: { actorFontSize: 20, messageFontSize: 18, noteFontSize: 18, actorFontFamily: font, messageFontFamily: font, noteFontFamily: font, boxMargin: 12, messageMargin: 44 },
+      themeVariables: {
+        darkMode: dark,
+        fontFamily: font,
+        fontSize: "20px",
+        background: cssVar("--cp-bg-elevated"),
+        primaryColor: cssVar("--cp-surface"),
+        primaryTextColor: cssVar("--cp-text"),
+        primaryBorderColor: cssVar("--cp-accent"),
+        secondaryColor: cssVar("--cp-surface-soft"),
+        tertiaryColor: cssVar("--cp-bg-elevated"),
+        lineColor: cssVar("--cp-border-strong"),
+        textColor: cssVar("--cp-text"),
+        clusterBkg: cssVar("--cp-surface-soft"),
+        clusterBorder: cssVar("--cp-border-strong"),
+        edgeLabelBackground: cssVar("--cp-bg-elevated"),
+        actorBkg: cssVar("--cp-surface"),
+        actorBorder: cssVar("--cp-accent"),
+        actorTextColor: cssVar("--cp-text"),
+        signalColor: cssVar("--cp-text-muted"),
+        signalTextColor: cssVar("--cp-text"),
+        noteBkgColor: cssVar("--cp-accent-soft"),
+        noteBorderColor: cssVar("--cp-accent"),
+        noteTextColor: cssVar("--cp-text"),
+        sequenceNumberColor: cssVar("--cp-accent-fg"),
+        labelBoxBkgColor: cssVar("--cp-surface"),
+        labelTextColor: cssVar("--cp-text"),
+      },
+    });
+    const blocks = document.querySelectorAll("pre.mermaid");
+    for (let i = 0; i < blocks.length; i++) {
+      const el = blocks[i];
+      const src = sources[i];
+      try {
+        const { svg } = await mermaid.render("m" + i + "_" + Date.now(), src);
+        el.outerHTML = `<div class="diagram" data-i="${i}">${svg}</div>`;
+      } catch (e) {
+        el.outerHTML = `<div class="diagram" data-i="${i}"><div class="err">Diagram failed to render: ${e.message}</div></div>`;
+      }
+    }
+  }
+
+  window.toggleTheme = async () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    document.querySelectorAll(".diagram[data-i]").forEach(d => {
+      const pre = document.createElement("pre");
+      pre.className = "mermaid";
+      d.replaceWith(pre);
+    });
+    await render();
+  };
+
+  render();
+</script>
+</body>
+</html>

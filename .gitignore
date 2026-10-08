@@ -1,0 +1,47 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+a365.generated.config.json
+a365.config.json
+.a365-workspace-detection.local.json
+tools/
+*.log
+appsettings*.json
+
+.env.*
+!.env.example
+!.env.*.example
+
+docs/deck/build/
+
+# Local credentials, identity output, caches and private demo evidence
+*.pem
+*.key
+*.pfx
+*.p12
+*.cer
+*.crt
+*token-cache*
+*token_cache*
+*msal-cache*
+*msal_cache*
+.azure/
+.a365/
+logs/
+artifacts/
+screenshots/
+recordings/
+*.har
+*.dmp
+*.bak
+*.backup
+*.local.json
+
+# Office lock files and operator-specific planning notes (kept locally)
+~$*
+docs/planning/
+
+# Operator-specific presentation and superseded copy; publish the -clean deck instead
+docs/Agent365-Demo-Diagrams.pptx
+docs/Agent365-Demo-Diagrams-Public.pptx
