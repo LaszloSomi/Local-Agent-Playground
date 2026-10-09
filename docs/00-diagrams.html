@@ -127,7 +127,7 @@ footer { text-align: center; color: var(--cp-text-soft); font-size: 15px; paddin
 .comparison th { background: var(--cp-surface); color: var(--cp-text); }
 .comparison th small { display: block; margin-top: 8px; font-size: 20px; color: var(--cp-text-muted); font-weight: 400; }
 .comparison th:first-child { width: 24%; }
-.comparison .outcome { color: var(--cp-accent); font-weight: 600; }
+.comparison .outcome .blocked { color: var(--cp-accent); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -433,20 +433,20 @@ flowchart TB
   <h2><span class="num">11</span>Three agents: local, observable, governed</h2>
   <div class="src">Source: <a href="presenter-script.md">presenter-script.md</a> · intended comparison setup</div>
   <div class="diagram comparison">
-    <div class="scenario-label">Intended demo setup · present left to right: Agent3 → Agent2 → Agent1</div>
+    <div class="scenario-label">Intended setup · columns left to right: Agent1 → Agent2 → Agent3 · demo story: Agent3 → Agent2 → Agent1</div>
     <table aria-label="Three-agent demo comparison">
       <thead><tr>
         <th scope="col">Same agent logic</th>
-        <th scope="col">DemoAgent3<small>Local baseline<br/>localhost:8002 (proposed)</small></th>
-        <th scope="col">DemoAgent2<small>Observable<br/>localhost:8001</small></th>
         <th scope="col">DemoAgent1<small>Governed<br/>localhost:8000</small></th>
+        <th scope="col">DemoAgent2<small>Observable<br/>localhost:8001</small></th>
+        <th scope="col">DemoAgent3<small>Local baseline<br/>localhost:8002 (proposed)</small></th>
       </tr></thead>
       <tbody>
-        <tr><th scope="row">Entra / registry</th><td>No integration</td><td>Registered</td><td>Registered</td></tr>
-        <tr><th scope="row">Observability</th><td>Local Jaeger only</td><td>Jaeger + Agent 365</td><td>Jaeger + Agent 365</td></tr>
-        <tr><th scope="row">Purview SDK</th><td>Disabled</td><td>Enabled</td><td>Enabled</td></tr>
-        <tr><th scope="row">Dallas-block policy</th><td>No Purview enforcement</td><td>Not targeted</td><td>Applied</td></tr>
-        <tr class="outcome"><th scope="row">Dallas prompt</th><td>Answer returned*</td><td>Answer returned*</td><td>Blocked before LLM</td></tr>
+        <tr><th scope="row">Entra / registry</th><td>Registered</td><td>Registered</td><td>No integration</td></tr>
+        <tr><th scope="row">Observability</th><td>Jaeger + Agent 365</td><td>Jaeger + Agent 365</td><td>Local Jaeger only</td></tr>
+        <tr><th scope="row">Purview SDK</th><td>Enabled</td><td>Enabled</td><td>Disabled</td></tr>
+        <tr><th scope="row">Dallas-block policy</th><td>Applied</td><td>Not targeted</td><td>No Purview enforcement</td></tr>
+        <tr class="outcome"><th scope="row">Dallas prompt</th><td><span class="blocked">Blocked before LLM</span></td><td>Answer returned*</td><td>Answer returned*</td></tr>
         <tr><th scope="row">San Francisco</th><td>Answer returned*</td><td>Answer returned*</td><td>Answer returned*</td></tr>
       </tbody>
     </table>

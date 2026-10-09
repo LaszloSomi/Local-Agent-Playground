@@ -14,7 +14,7 @@ its prompts and responses under Purview policy through the Purview SDK, without 
 Use [diagram 11](00-diagrams.html#d11) to introduce the comparison. **DemoAgent1/2/3 are talk-track labels**, not tenant renames:
 Agent1 maps to `Laszlo-AgentRegistryDemo1`; Agent2 maps to the existing second instance; Agent3 is a proposed local-only instance.
 
-| Capability / expected result | DemoAgent3: local baseline | DemoAgent2: observable | DemoAgent1: governed |
+| Capability / expected result | DemoAgent1: governed | DemoAgent2: observable | DemoAgent3: local baseline |
 |---|---|---|---|
 | Local UI | Proposed :8002 | :8001 | :8000 |
 | Entra sign-in / Agent 365 registry | No integration | Yes, shared blueprint | Yes, shared blueprint |
@@ -24,7 +24,7 @@ Agent1 maps to `Laszlo-AgentRegistryDemo1`; Agent2 maps to the existing second i
 | Dallas prompt | Answer returned* | Answer returned* | Blocked before LLM/tools |
 | San Francisco prompt | Answer returned* | Answer returned* | Answer returned* |
 
-*Expected with healthy model/tools and no other blocking policy.
+*Expected with healthy model/tools and no other blocking policy. The diagram reads left to right as Agent1 → Agent2 → Agent3; the narrated demo starts with the local baseline (Agent3) and proceeds to governed (Agent1).
 
 **This is the intended demonstration, not the current configuration.** Agent3 has not been created, and
 `New-PurviewDlpDemo.ps1` currently targets both registered instances. Before presenting, create a separate

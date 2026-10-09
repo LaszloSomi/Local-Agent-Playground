@@ -101,9 +101,14 @@ function talkPanel(slide, x, y, w, h, talk, legend) {
 }
 
 // ---- Diagram slides -------------------------------------------------------
-data.slides.forEach((d, idx) => {
+const orderedSlides = [...data.slides].sort((a, b) => {
+  if (a.id === "d11") return -1;
+  if (b.id === "d11") return 1;
+  return 0;
+});
+orderedSlides.forEach(d => {
   const s = pres.addSlide();
-  const num = idx + 1;
+  const num = Number(d.id.slice(1));
   header(s, num, d.title);
   footer(s, d.src);
   const top = 1.15, bottom = H - 0.6, availH = bottom - top;
